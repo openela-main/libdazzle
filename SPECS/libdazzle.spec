@@ -2,7 +2,7 @@
 
 Name:           libdazzle
 Version:        3.28.5
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Experimental new features for GTK+ and GLib
 
 License:        GPLv3+
@@ -36,6 +36,14 @@ development of this project.
 %package        devel
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
+# https://bugzilla.redhat.com/show_bug.cgi?id=1972097
+%ifarch x86_64
+Conflicts:      %{name}-devel(x86-32) <= %{version}-%{release}
+%else
+%ifarch i686
+Conflicts:      %{name}-devel(x86-64) <= %{version}-%{release}
+%endif
+%endif
 
 %description    devel
 The %{name}-devel package contains libraries and header files for
@@ -83,6 +91,10 @@ dbus-run-session -- xvfb-run -w 10 ninja test %{__ninja_common_opts} -C %{_vpath
 
 
 %changelog
+* Wed May 24 2023 Kalev Lember <klember@redhat.com> - 3.28.5-3
+- Add Conflicts for i686/x86_64 devel subpackage
+- Resolves: #1972097
+
 * Mon Feb 01 2021 Kalev Lember <klember@redhat.com> - 3.28.5-2
 - Rebuild to ship libdazzle-devel in CRB
 - Resolves: #1919429
